@@ -30,7 +30,7 @@ pip install -r requirements.txt
 sudo apt-get update
 sudo apt-get install redis
 ```  
-3. You need register on [elasticpath](https://www.elasticpath.com/):  
+3. You need register on [elasticpath](https://www.elasticpath.com/), then:  
 3.1 Create shop  
 3.2 Create products  
 3.3 Create pricebooks  
