@@ -29,11 +29,14 @@ def send_cart(update, context, elastic_token, cart_reference):
             text += f"{name}\n"
             text += f"{description}\n"
             text += f"{quantity}kg in cart for ${quantity*unit_price}\n\n"
-            button = InlineKeyboardButton(
-                f'Удалить {name}',
-                callback_data=f'{product["id"]}'
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        f'Удалить {name}',
+                        callback_data=f'{product["id"]}'
+                    )
+                ]
             )
-            keyboard.append(button)
         keyboard.append(
             [
                 InlineKeyboardButton('В меню', callback_data='menu'),
@@ -83,7 +86,11 @@ def start(update, context, elastic_token):
     keyboard = []
     for product in products:
         keyboard.append(
-            [InlineKeyboardButton(f'{product["attributes"]["name"]}', callback_data=product['id'])]
+            [
+                InlineKeyboardButton(
+                    f'{product["attributes"]["name"]}',
+                    callback_data=product['id']),
+            ]
         )
     keyboard.append([InlineKeyboardButton('Корзина', callback_data='cart')])
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -125,8 +132,7 @@ def button(update, context, elastic_token):
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
         caption=f"{product['name']}\n\n"
-                f"{product['description']}\n"
-                f"{product['slug']}\n",
+                f"{product['description']}\n",
         photo=f'{image_link}',
         reply_markup=reply_markup,
     )
