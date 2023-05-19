@@ -31,10 +31,10 @@ sudo apt-get update
 sudo apt-get install redis
 ```  
 3. You need register on [elasticpath](https://www.elasticpath.com/):  
-3.1 Create shop
-3.2 Create products
-3.3 Create pricebooks
-3.4 Create and publish catalogs
+3.1 Create shop  
+3.2 Create products  
+3.3 Create pricebooks  
+3.4 Create and publish catalogs  
 
 ### Enviroment
 
@@ -70,8 +70,8 @@ Running example with arguments:
 ### Examples  
 * **Example of a Telegram bot**
  
-link: [https://t.me/dvmnQuizbotbot  ](https://t.me/FishkaDevShopbot)
-![1111](https://github.com/SadRus/chat-bots-no4/assets/79669407/27c28e2a-8c0d-4ca8-a975-697d227aff87)
+link: [https://t.me/dvmnQuizbotbot  ](https://t.me/FishkaDevShopbot)  
+![ezgif-4-6bcee9505d](https://github.com/SadRus/chat-bots-no5/assets/79669407/5df32bcf-fe28-4d76-9485-79d577e274f0)
 
 
 ### Deployment on a server
