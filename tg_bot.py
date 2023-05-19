@@ -14,9 +14,11 @@ from telegram.ext import (
 from elastic_handlers import (
     add_product_to_cart,
     create_cart,
+    create_customer,
     get_access_token,
     get_cart_content,
     get_cart_products,
+    get_customer_by_id,
     get_image_link,
     get_products,
     get_product_by_id,
@@ -46,7 +48,10 @@ def send_cart(update, context, elastic_token, cart_reference):
                 [InlineKeyboardButton(f'Удалить {name}', callback_data=f'{product["id"]}')]
             )
         keyboard.append(
-            [InlineKeyboardButton('В меню', callback_data='menu')]
+            [
+                InlineKeyboardButton('В меню', callback_data='menu'),
+                InlineKeyboardButton('Оплата', callback_data='payment'),
+            ]
         )
         cart_content = get_cart_content(elastic_token, cart_reference)
         total_sum = cart_content['meta']['display_price']['with_tax']['amount']
@@ -119,7 +124,7 @@ def button(update, context, elastic_token):
             InlineKeyboardButton('5 kg', callback_data=5),
             InlineKeyboardButton('10 kg', callback_data=10)
         ],
-        [InlineKeyboardButton('Назад', callback_data='back')],
+        [InlineKeyboardButton('Назад', callback_data='menu')],
         [InlineKeyboardButton('Корзина', callback_data='cart')],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -148,7 +153,7 @@ def button(update, context, elastic_token):
 def description_button(update, context, elastic_token):
     query = update.callback_query
     query.answer()
-    if query.data == 'back':
+    if query.data == 'menu':
         start(update, context, elastic_token)
         context.bot.delete_message(
             chat_id=update.effective_chat.id,
@@ -182,11 +187,41 @@ def cart_button(update, context, elastic_token):
             message_id=query.message.message_id,
         )
         return 'HANDLE_MENU'
+    elif query.data == 'payment':
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='Пожалуйста пришлите ваш email:',
+        )
+        return "WAITING_EMAIL"
     else:
         cart_reference = context.user_data['cart_reference']
         remove_item_from_cart(elastic_token, cart_reference, query.data)
         send_cart(update, context, elastic_token, cart_reference)
         return 'HANDLE_CART'
+
+
+def handle_email(update, context, elastic_token):
+    user_email = update.message.text
+    user_id = str(update.effective_chat.id)
+
+    customer_id = create_customer(elastic_token, user_id, user_email)['id']
+
+    # Для проверки
+    user_email = get_customer_by_id(elastic_token, customer_id)['email']
+
+    keyboard = [
+        [
+            InlineKeyboardButton('В меню', callback_data='menu'),
+            InlineKeyboardButton('Корзина', callback_data='cart'),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    context.bot.send_message(
+        chat_id=user_id,
+        text=f'Вы указали почту:\n{user_email}',
+        reply_markup=reply_markup,
+    )
+    return 'HANDLE_DESCRIPTION'
 
 
 def handle_users_reply(update, context):
@@ -214,6 +249,7 @@ def handle_users_reply(update, context):
         'HANDLE_MENU': button,
         'HANDLE_DESCRIPTION': description_button,
         'HANDLE_CART': cart_button,
+        'WAITING_EMAIL': handle_email,
     }
     state_handler = states_functions[user_state]
     try:

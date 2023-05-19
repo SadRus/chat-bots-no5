@@ -164,11 +164,39 @@ def get_image_link(token, image_id):
     # fullpath = os.path.join(folder, filename)
     # with open(fullpath, 'wb') as file:
     #     file.write(response.content)
+
 def get_all_carts(token):
     url = 'https://api.moltin.com/v2/carts'
     response = requests.get(url, headers={'Authorization': f'Bearer {token}'})
     return response.json()
 
+
+def create_customer(token, user_id, email):
+    url = 'https://api.moltin.com/v2/customers'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
+    payload = {
+        'data': {
+            'type': 'customer',
+            'name': user_id,
+            'email': email,
+        }
+    }
+    response = requests.post(url, headers=headers, json=payload)
+    response.raise_for_status()
+    return response.json()['data']
+
+
+def get_customer_by_id(token, customer_id):
+    url = f'https://api.moltin.com/v2/customers/{customer_id}'
+    headers = {
+        'Authorization': f'Bearer {token}',
+    }
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json()['data']
 
 def main():
     load_dotenv()
