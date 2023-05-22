@@ -10,6 +10,7 @@ def get_access_token(client_id, client_secret):
     }
 
     response = requests.post(url, data=payload)
+    response.raise_for_status()
     return response.json()['access_token']
 
 
@@ -30,6 +31,7 @@ def get_product_by_id(token, product_id):
         'Authorization': f'Bearer {token}',
     }
     response = requests.get(url, headers=headers)
+    response.raise_for_status()
     product_content = response.json()['data']
     return product_content
 
@@ -100,42 +102,13 @@ def remove_item_from_cart(token, cart_reference, item_id):
     response.raise_for_status()
 
 
-def get_price_book(token, pricebook_id):
-    url = f'https://api.moltin.com/pcm/pricebooks/{pricebook_id}'
-    headers = {
-        'Authorization': f'Bearer {token}',
-    }
-    response = requests.get(url, headers=headers)
-    pricebook_content = response.json()
-    return pricebook_content
-
-
-def get_product_price(token, pricebook_id, product_price_id):
-    url = f'https://api.moltin.com/pcm/pricebooks/{pricebook_id}/prices/{product_price_id}'
-    headers = {
-        'Authorization': f'Bearer {token}',
-    }
-    response = requests.get(url, headers=headers)
-    produce_price = response.json()
-    return produce_price
-
-
-def get_all_prices(token, pricebook_id):
-    url = f'https://api.moltin.com/pcm/pricebooks/{pricebook_id}/prices'
-    headers = {
-        'Authorization': f'Bearer {token}',
-    }
-    response = requests.get(url, headers=headers)
-    prices_content = response.json()
-    return prices_content
-
-
 def get_product_image(token, product_id):
     url = f'https://api.moltin.com/pcm/products/{product_id}/relationships/main_image'
     headers = {
         'Authorization': f'Bearer {token}',
     }
     response = requests.get(url, headers=headers)
+    response.raise_for_status()
     image_relationships = response.json()['data']
     return image_relationships
 
@@ -150,12 +123,6 @@ def get_image_link(token, image_id):
     image_content = response.json()['data']
     image_link = image_content['link']['href']
     return image_link
-
-
-def get_all_carts(token):
-    url = 'https://api.moltin.com/v2/carts'
-    response = requests.get(url, headers={'Authorization': f'Bearer {token}'})
-    return response.json()
 
 
 def create_customer(token, user_id, email):
