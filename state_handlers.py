@@ -103,7 +103,7 @@ def start(update, context, elastic_token):
     return 'HANDLE_MENU'
 
 
-def button(update, context, elastic_token):
+def handle_menu_button(update, context, elastic_token):
     query = update.callback_query
     query.answer()
 
@@ -143,7 +143,7 @@ def button(update, context, elastic_token):
     return 'HANDLE_DESCRIPTION'
 
 
-def description_button(update, context, elastic_token):
+def handle_description_button(update, context, elastic_token):
     query = update.callback_query
     query.answer()
     if query.data == 'menu':
@@ -170,7 +170,7 @@ def description_button(update, context, elastic_token):
         return 'HANDLE_DESCRIPTION'
 
 
-def cart_button(update, context, elastic_token):
+def handle_cart_button(update, context, elastic_token):
     query = update.callback_query
     query.answer()
     if query.data == 'menu':

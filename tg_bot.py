@@ -16,9 +16,9 @@ from create_argparser import create_parser
 from elastic_handlers import get_access_token
 from state_handlers import (
     start,
-    button,
-    description_button,
-    cart_button,
+    handle_menu_button,
+    handle_description_button,
+    handle_cart_button,
     handle_email,
 )
 from tg_handlers import TelegramLogsHandler
@@ -50,9 +50,9 @@ def handle_users_reply(update, context):
 
     states_functions = {
         'START': start,
-        'HANDLE_MENU': button,
-        'HANDLE_DESCRIPTION': description_button,
-        'HANDLE_CART': cart_button,
+        'HANDLE_MENU': handle_menu_button,
+        'HANDLE_DESCRIPTION': handle_description_button,
+        'HANDLE_CART': handle_cart_button,
         'WAITING_EMAIL': handle_email,
     }
     state_handler = states_functions[user_state]
