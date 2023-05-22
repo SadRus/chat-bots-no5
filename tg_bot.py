@@ -1,6 +1,7 @@
 import logging
 import os
 import redis
+import time
 
 from dotenv import load_dotenv
 import telegram
@@ -32,7 +33,17 @@ def handle_users_reply(update, context):
     db = get_database_connection()
     client_id = os.getenv('ELASTIC_CLIENT_ID')
     client_secret = os.getenv('ELASTIC_CLIENT_SECRET')
-    elastic_token = get_access_token(client_id, client_secret)
+
+    timestamp = time.time()
+    token_expiration_timestamp = context.user_data.get(
+        'token_expiration_timestamp', timestamp
+    )
+    elastic_token = context.user_data.get('elastic_token', None)
+    if timestamp > token_expiration_timestamp or elastic_token is None:
+        elastic_content = get_access_token(client_id, client_secret)
+        elastic_token = elastic_content['access_token']
+        context.user_data['elastic_token'] = elastic_token
+        context.user_data['token_expiration_timestamp'] = elastic_content['expires']
 
     if update.message:
         user_reply = update.message.text
