@@ -40,10 +40,10 @@ def handle_users_reply(update, context):
     )
     elastic_token = context.user_data.get('elastic_token', None)
     if timestamp > token_expiration_timestamp or elastic_token is None:
-        elastic_content = get_access_token(client_id, client_secret)
-        elastic_token = elastic_content['access_token']
+        elastic_token_content = get_access_token(client_id, client_secret)
+        elastic_token = elastic_token_content['access_token']
         context.user_data['elastic_token'] = elastic_token
-        context.user_data['token_expiration_timestamp'] = elastic_content['expires']
+        context.user_data['token_expiration_timestamp'] = elastic_token_content['expires']
 
     if update.message:
         user_reply = update.message.text
